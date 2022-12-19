@@ -1,7 +1,8 @@
 # gui_js_samples_ros
 javascript ros samples
 
-- graph sample
+- `graph.html`
+
 ```
 on click graph publish topic : 'Geometry_msgs/PoseStamped'
 subscribe topic and show graph : 'Geometry_msgs/PoseStamped'
