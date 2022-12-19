@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
 import rospy
+
 from std_msgs.msg import *
 from geometry_msgs.msg import *
+from nav_msgs.msg import *
+
 import tf
 
 def euler_to_quaternion(euler):
@@ -23,7 +26,10 @@ def quaternion_to_euler(quaternion):
     e = tf.transformations.euler_from_quaternion((quaternion.x, quaternion.y, quaternion.z, quaternion.w))
     return Vector3(x=e[0], y=e[1], z=e[2])
 
-def callback(msg):
+def path_callback(msg):
+  print(msg)
+
+def pose_callback(msg):
   global pub
   print(msg)
 
@@ -41,7 +47,9 @@ def callback(msg):
 
 rospy.init_node("quat_euler_bridge")
 pub = rospy.Publisher("/pub_pose/data_euler", PoseStamped, queue_size=10)
-rospy.Subscriber("/pub_pose/data", PoseStamped, callback)
+
+rospy.Subscriber("/pub_pose/data", PoseStamped, pose_callback)
+rospy.Subscriber("/pub_path/data", Path, path_callback)
 
 r = rospy.Rate(10)
 
