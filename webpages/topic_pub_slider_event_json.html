@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+
+  <script>
+
+  var ros = new ROSLIB.Ros();
+
+  ros.on('error', function(error) {
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('connected').style.display = 'none';
+    document.getElementById('closed').style.display = 'none';
+    document.getElementById('error').style.display = 'inline';
+    console.log(error);
+  });
+
+  ros.on('connection', function() {
+    console.log('Connection made!');
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('error').style.display = 'none';
+    document.getElementById('closed').style.display = 'none';
+    document.getElementById('connected').style.display = 'inline';
+  });
+
+  ros.on('close', function() {
+    console.log('Connection closed.');
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('connected').style.display = 'none';
+    document.getElementById('closed').style.display = 'inline';
+  });
+
+  ros.connect('ws://localhost:9090');
+
+  var pub = new ROSLIB.Topic({
+    ros : ros,
+    name : '/json_data',
+    //messageType : 'geometry_msgs/Twist'
+    messageType : 'std_msgs/String'
+  });
+
+  var msg = new ROSLIB.Message({
+    data: ""
+  });
+
+  var json = {
+  "data1": 0,
+  "data2": 22,
+  "data3": 33
+}
+
+    function change_slider() {
+      var slider = document.getElementById("slider1");
+      var out_frame = document.getElementById("output");
+
+      out_frame.innerText = slider.value;
+      
+      json["data1"] = Number(slider.value)
+
+      msg.data = JSON.stringify(json);
+
+      pub.publish(msg);
+    }
+
+    function change_slider2() {
+      var slider = document.getElementById("slider2");
+      var out_frame = document.getElementById("output2");
+
+      out_frame.innerText = slider.value;
+      
+      json["data2"] = Number(slider.value)
+
+      msg.data = JSON.stringify(json);
+
+      pub.publish(msg);
+    }
+
+    function change_slider3() {
+      var slider = document.getElementById("slider3");
+      var out_frame = document.getElementById("output3");
+
+      out_frame.innerText = slider.value;
+      
+      json["data2"] = Number(slider.value)
+
+      msg.data = JSON.stringify(json);
+
+      pub.publish(msg);
+    }
+  </script>
+</head>
+<body>
+  <input id="slider1" type="range" value="50" min="1" max="100" oninput="change_slider();"/>
+  <nobr id="output"></nobr>
+  <div></div>
+
+  <input id="slider2" type="range" value="50" min="1" max="100" oninput="change_slider2();"/>
+  <nobr id="output2"></nobr>
+  <div></div>
+
+  <input id="slider3" type="range" value="50" min="1" max="100" oninput="change_slider3();"/>
+  <nobr id="output3"></nobr>
+</body>
+</html>
+

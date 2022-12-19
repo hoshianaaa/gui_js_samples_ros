@@ -1,0 +1,259 @@
+<!-- 2d graph https://www.w3resource.com/html5-canvas/html5-canvas-lines.php -->
+<!-- canvas click pos https://www.ipentec.com/document/html-canvas-get-pointer-position -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Draw a line</title>
+</head>
+<body>
+<canvas id="DemoCanvas" width="400" height="400"></canvas>  
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+<script>  
+  var SCALE = 0.01;
+  var ros = new ROSLIB.Ros();
+
+  var robot_pose_x = null;
+  var robot_pose_y = null;
+  var robot_angnle = null;
+
+  var click_pix_x = null;
+  var click_pix_y = null;
+
+  ros.connect('ws://localhost:9090');
+
+  var pub = new ROSLIB.Topic({
+    ros : ros,
+    name : '/data',
+    //messageType : 'geometry_msgs/Twist'
+//    messageType : 'std_msgs/Float64'
+    messageType : 'geometry_msgs/PointStamped'
+  });
+
+  var msg = new ROSLIB.Message(
+    {"header": {"seq": 0, "stamp": {"secs": 0, "nsecs": 0}, "frame_id": "map"}, "point": {"x": 0.0, "y": 1.0, "z": 0.0}}
+  );
+
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : '/pub_pose/data_euler',
+    messageType : 'geometry_msgs/PoseStamped'
+  });
+
+  // Then we add a callback to be called every time a message is published on this topic.
+  listener.subscribe(function(message) {
+    //console.log('Received message on ' + listener.name + ': ' + message.data);
+    console.log(message);
+
+    x = message.pose.position.x;
+    y = message.pose.position.y;
+    z = message.pose.position.z;
+
+    ex = message.pose.orientation.x;
+    ey = message.pose.orientation.y;
+    ez = message.pose.orientation.z;
+
+    robot_pose_x = x / SCALE;
+    robot_pose_y = 400 - (y / SCALE);
+    robot_angle = ez;
+
+    console.log(x);
+    // If desired, we can unsubscribe from the topic as well.
+    //listener.unsubscribe();
+  });
+
+  var listener2 = new ROSLIB.Topic({
+    ros : ros,
+    name : '/pub_path/data_euler',
+    messageType : 'nav_msgs/Path'
+  });
+
+  // Then we add a callback to be called every time a message is published on this topic.
+  listener.subscribe(function(message) {
+    //console.log('Received message on ' + listener.name + ': ' + message.data);
+    
+    console.log(message);
+
+    p = message[0];
+
+    x = p.pose.position.x;
+    y = p.pose.position.y;
+    z = p.pose.position.z;
+
+    ex = p.pose.orientation.x;
+    ey = p.pose.orientation.y;
+    ez = p.pose.orientation.z;
+
+    robot_pose_x = x / SCALE;
+    robot_pose_y = 400 - (y / SCALE);
+    robot_angle = ez;
+
+    console.log(x);
+    // If desired, we can unsubscribe from the topic as well.
+    //listener.unsubscribe();
+  });
+
+
+
+//  pub.publish(msg);
+
+    function draw_point(canvas, x,y) {
+      if (canvas.getContext) 
+      {
+        var ctx = canvas.getContext('2d');
+
+        // ---- draw point ----
+        // * draw point
+        // http://html5tutorial.com/how-to-draw-a-point-with-the-canvas-api/
+        // * arc function
+        // void ctx.arc(x, y, radius, startAngle, endAngle [, counterclockwise]);
+        // https://developer.mozilla.org/ja/docs/Web/API/CanvasRenderingContext2D/arc
+        // * add color ( g.fillStyle = "red", g.fill() )
+        // https://dianxnao.com/javascript%ef%bc%9a%e3%82%ad%e3%83%a3%e3%83%b3%e3%83%90%e3%82%b9%e3%81%ab%e5%9b%b3%e5%bd%a2%e3%82%92%e6%8f%8f%e7%94%bb%e3%81%99%e3%82%8b/
+
+ //       ctx.strokeStyle = 'darkorange';
+        ctx.beginPath();
+        ctx.fillStyle = 'orange';
+        ctx.arc(x, y, 3, 0, 2 * Math.PI, true);
+        ctx.fill()
+//        ctx.stroke();
+      }
+    }
+
+
+    function rotate(arr_2d, rad) {
+      var arr = arr_2d;
+      x = Math.cos(rad) * arr[0] - Math.sin(rad) * arr[1];
+      y = Math.sin(rad) * arr[0] + Math.cos(rad) * arr[1];
+      return [x, y];
+    }
+
+    function draw_triangle(canvas, x, y, rad) {
+
+      p1 = [0, -10];
+      p2 = [-5, 10];
+      p3 = [5, 10];
+
+      p1 = rotate(p1, rad);
+      p2 = rotate(p2, rad);
+      p3 = rotate(p3, rad);
+
+      var ctx = canvas.getContext('2d');
+      ctx.beginPath();
+      ctx.fillStyle = 'red';
+
+      ctx.moveTo(x + p1[0], y + p1[1]);
+      ctx.lineTo(x + p2[0], y + p2[1]);
+      ctx.lineTo(x + p3[0], y + p3[1]);
+
+      ctx.fill();
+    }
+
+    /*
+    function draw_text(canvas, message) {
+        var context = canvas.getContext('2d');
+        context.font = '12pt "MSゴシック"';
+        context.fillStyle = 'black';
+        context.fillText(message, 32, 48);
+    }
+    */
+
+    function draw_graph(canvas) {
+        var context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        //context.font = '12pt "MSゴシック"';
+        //context.fillStyle = 'black';
+
+        if (canvas.getContext) 
+        {
+          var ctx = canvas.getContext("2d");
+              ctx.strokeStyle = "black";
+             for (i = 10; i < 400; i += 20) 
+               {
+               ctx.moveTo(0, i);
+               ctx.lineTo(canvas.width, i);
+               ctx.stroke();
+              }
+             for (i = 10; i <400; i += 20) 
+               {
+               ctx.moveTo(i, 0);
+               ctx.lineTo(i,canvas.width);
+               ctx.stroke();
+              }
+        } 
+    }
+
+
+
+  function getMousePosition(canvas, evt) {
+      var rect = canvas.getBoundingClientRect();
+      return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+      };
+  }
+
+  var canvas = document.getElementById('DemoCanvas');
+
+  if (canvas.getContext) 
+   {
+    var ctx = canvas.getContext("2d");
+       for (i = 10; i < 400; i += 20) 
+         {
+         ctx.moveTo(0, i);
+         ctx.lineTo(canvas.width, i);
+         ctx.stroke();
+        }
+       for (i = 10; i <400; i += 20) 
+         {
+         ctx.moveTo(i, 0);
+         ctx.lineTo(i,canvas.width);
+         ctx.stroke();
+        }
+    } 
+   
+    //{"header": {"seq": 0, "stamp": {"secs": 0, "nsecs": 0}, "frame_id": "map"}, "point": {"x": 0.0, "y": 1.0, "z": 0.0}}
+   //canvas.addEventListener('mousemove', function (evt) {
+   canvas.addEventListener('click', function (evt) {
+            var mousePos = getMousePosition(canvas, evt);
+            var message = 'Mouse position X:' + mousePos.x + ', Y:' + mousePos.y;
+//            PrintPosition(canvas, message);
+//            PrintPoint(canvas, mousePos.x, mousePos.y);
+            x = mousePos.x;
+            y = mousePos.y;
+            click_pix_x = x; 
+            click_pix_y = y;
+
+            msg.point.x = Number(x) * SCALE;
+            msg.point.y = (400 - Number(y)) * SCALE;
+
+            pub.publish(msg);
+
+          }, false);
+  function render() {
+
+    //var ctx = canvas.getContext("2d");
+
+    draw_graph(canvas);
+
+    if ((robot_pose_x != null) && (robot_pose_y != null) && (robot_angle != null))
+    {
+      draw_triangle(canvas, robot_pose_x, robot_pose_y, -robot_angle);
+    }
+    if ((click_pix_x != null) && (click_pix_y != null))
+    {
+      draw_point(canvas, click_pix_x, click_pix_y); 
+    }
+
+    requestAnimationFrame(render);
+
+  }
+
+  render();
+
+</script>  
+</body>
+</html>

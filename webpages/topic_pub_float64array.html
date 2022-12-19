@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+<script>
+
+  var ros = new ROSLIB.Ros();
+
+  ros.on('error', function(error) {
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('connected').style.display = 'none';
+    document.getElementById('closed').style.display = 'none';
+    document.getElementById('error').style.display = 'inline';
+    console.log(error);
+  });
+
+  ros.on('connection', function() {
+    console.log('Connection made!');
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('error').style.display = 'none';
+    document.getElementById('closed').style.display = 'none';
+    document.getElementById('connected').style.display = 'inline';
+  });
+
+  ros.on('close', function() {
+    console.log('Connection closed.');
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('connected').style.display = 'none';
+    document.getElementById('closed').style.display = 'inline';
+  });
+
+  ros.connect('ws://localhost:9090');
+
+  var pub = new ROSLIB.Topic({
+    ros : ros,
+    name : '/data',
+    //messageType : 'geometry_msgs/Twist'
+    messageType : 'std_msgs/Float64MultiArray'
+  });
+
+  var msg = new ROSLIB.Message({
+    "layout": {"dim": [], "data_offset": 0}, "data": [1, 2, 3, 4]
+  });
+
+  pub.publish(msg);
+
+</script>
+</head>
+
+<body>
+  <h1>ROS Topic Publish Example</h1>
+  <div id="statusIndicator">
+    <p id="connecting">
+      Connecting to rosbridge...
+    </p>
+    <p id="connected" style="color:#00D600; display:none">
+      Connected
+    </p>
+    <p id="error" style="color:#FF0000; display:none">
+      Error in the backend!
+    </p>
+    <p id="closed" style="display:none">
+      Connection closed.
+    </p>
+  </div>
+
+</body>
+</html>
+

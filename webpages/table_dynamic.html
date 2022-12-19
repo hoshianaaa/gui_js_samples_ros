@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<meta charset="UTF-8" />
+
+<div>
+  <button onclick="addrow()">add row</button>
+  <button onclick="deleteRow()">delete</button>
+  <button onclick="send()">send</button>
+</div>
+<table border="1" id="tbl">
+  <tr>
+    <th>mode</th>
+    <th>x</th>
+    <th>y</th>
+    <th>z</th>
+    <th>r</th>
+  </tr>
+</table>
+
+<script>
+
+function deleteRow() {
+  if (tbl.rows.length > 2)
+  {
+    let tbl = document.getElementById('tbl');
+    tbl.deleteRow(-1);
+  }
+}
+
+function addrow(){
+
+  let tbl = document.getElementById('tbl');
+
+  let name=["motion","picking"];
+
+//input type=dateをtrに追加
+  let tr = document.createElement('tr');
+  let datetd = document.createElement('td');
+  let dateinp = document.createElement('input');
+  dateinp.value = 0;
+  let datetd2 = document.createElement('td');
+  let dateinp2 = document.createElement('input');
+  dateinp2.value = 0;
+  let datetd3 = document.createElement('td');
+  let dateinp3 = document.createElement('input');
+  dateinp3.value = 0;
+  let datetd4 = document.createElement('td');
+  let dateinp4 = document.createElement('input');
+  dateinp4.value = 0;
+
+  //↑上記で必要な要素（tr,td,input）を用意
+
+  //dateinp.setAttribute('type','date');//inputを日付形式に
+//下記、createSelect関数に、配列、tr、tblを渡す
+  createSelect(name,tr,tbl);
+//  createSelect(todo,tr,tbl);
+
+  datetd.appendChild(dateinp);        //tdに追加
+  tr.appendChild(datetd);               
+
+  datetd2.appendChild(dateinp2);        //tdに追加
+  tr.appendChild(datetd2);               
+
+  datetd3.appendChild(dateinp3);        //tdに追加
+  tr.appendChild(datetd3);               
+
+  datetd4.appendChild(dateinp4);        //tdに追加
+  tr.appendChild(datetd4);               
+
+  tbl.appendChild(tr);
+
+}
+
+//担当とタスクは同じくselectなので、createSelectを使いまわします。
+function createSelect(arr,tr,tbl){
+
+  let sl = document.createElement('select');
+  let td = document.createElement('td');
+  for(let num in arr){        //引数で受け取ったからoptionを作って動的にselect生成
+    let op = document.createElement('option');
+    op.text = arr[num];
+    sl.appendChild(op);
+  }
+  td.appendChild(sl);
+  tr.appendChild(td);
+
+}
+
+function send(){
+
+    //tbl.deleteRow(-1);
+  
+    let tbl = document.getElementById('tbl');
+    for (var i=1, len = tbl.rows.length; i<len; i++)
+    {
+      var x = tbl.rows[i].cells[1].querySelector('input').value;
+      var y = tbl.rows[i].cells[2].querySelector('input').value;
+      var z = tbl.rows[i].cells[3].querySelector('input').value; 
+      var r = tbl.rows[i].cells[4].querySelector('input').value; 
+      console.log(i, x, y, z, r);
+    }
+}
+
+addrow()
+
+</script>
+
+</body>
+</html>

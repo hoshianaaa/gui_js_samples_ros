@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+
+  <script>
+
+  var ros = new ROSLIB.Ros();
+
+  ros.on('error', function(error) {
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('connected').style.display = 'none';
+    document.getElementById('closed').style.display = 'none';
+    document.getElementById('error').style.display = 'inline';
+    console.log(error);
+  });
+
+  ros.on('connection', function() {
+    console.log('Connection made!');
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('error').style.display = 'none';
+    document.getElementById('closed').style.display = 'none';
+    document.getElementById('connected').style.display = 'inline';
+  });
+
+  ros.on('close', function() {
+    console.log('Connection closed.');
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('connected').style.display = 'none';
+    document.getElementById('closed').style.display = 'inline';
+  });
+
+  ros.connect('ws://localhost:9090');
+
+  var pub = new ROSLIB.Topic({
+    ros : ros,
+    name : '/data',
+    //messageType : 'geometry_msgs/Twist'
+    messageType : 'std_msgs/Float64'
+  });
+
+  var msg = new ROSLIB.Message({
+    data: 33.333
+  });
+
+
+    function change_slider() {
+      var slider = document.getElementById("slider1");
+      var out_frame = document.getElementById("output");
+
+      out_frame.innerText = slider.value;
+      
+      msg.data = Number(slider.value);
+      pub.publish(msg);
+    }
+  </script>
+</head>
+<body>
+  <p>スライダーコントロールの値の取得デモ</p>
+  <!--input id="slider1" type="range" value="50" min="1" max="100" onchange="change_slider();"/-->
+  <input id="slider1" type="range" value="50" min="1" max="100" oninput="change_slider();"/>
+  <p>スライダーの値</p>
+  <div id="output"></div>
+</body>
+</html>
+

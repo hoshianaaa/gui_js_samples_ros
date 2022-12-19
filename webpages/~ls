@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+
+<head>
+</head>
+
+<body>
+  <button title="button" type="button" id="btn">button</button>
+
+<script src="./build/roslib.js"></script>
+
+<script>
+
+  // ros *****************************
+    
+  var ros = new ROSLIB.Ros();
+
+  ros.on('error', function(error) {
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('connected').style.display = 'none';
+    document.getElementById('closed').style.display = 'none';
+    document.getElementById('error').style.display = 'inline';
+    console.log(error);
+  });
+
+  ros.on('connection', function() {
+    console.log('Connection made!');
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('error').style.display = 'none';
+    document.getElementById('closed').style.display = 'none';
+    document.getElementById('connected').style.display = 'inline';
+  });
+
+  ros.on('close', function() {
+    console.log('Connection closed.');
+    document.getElementById('connecting').style.display = 'none';
+    document.getElementById('connected').style.display = 'none';
+    document.getElementById('closed').style.display = 'inline';
+  });
+
+  ros.connect('ws://0.0.0.0:9090');
+
+  var pub = new ROSLIB.Topic({
+    ros : ros,
+    name : 'browser/data',
+    //messageType : 'geometry_msgs/Twist'
+    messageType : 'std_msgs/String'
+  });
+
+  var msg = new ROSLIB.Message({
+    data: ""
+  });
+
+  // *********************************
+
+
+  let button = document.getElementById('btn');
+
+  button.addEventListener('click', function(event){
+      let count = event.detail;
+      console.log('Click count is ' + count);
+      pub.publish(msg);
+
+  });
+</script>
+
+</body>
+</html>
