@@ -58,11 +58,11 @@
     ey = message.pose.orientation.y;
     ez = message.pose.orientation.z;
 
-    robot_pose_x = x / SCALE;
-    robot_pose_y = 400 - (y / SCALE);
+    robot_pose_x = x;
+    robot_pose_y = y;
     robot_angle = ez;
 
-    console.log(x);
+    //console.log(x);
     // If desired, we can unsubscribe from the topic as well.
     //listener.unsubscribe();
   });
@@ -312,7 +312,8 @@
 
     if ((robot_pose_x != null) && (robot_pose_y != null) && (robot_angle != null))
     {
-      draw_triangle(canvas, robot_pose_x, robot_pose_y, -robot_angle);
+      pix = pos2pix(robot_pose_x, robot_pose_y);
+      draw_triangle(canvas, pix[0], pix[1], -robot_angle);
     }
     if ((click_pix_x != null) && (click_pix_y != null))
     {
