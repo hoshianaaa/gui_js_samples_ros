@@ -112,6 +112,14 @@
 
 //  pub.publish(msg);
 
+    function pix2position(x,y) { 
+      return [x * SCALE, (400 - y) * SCALE];
+    }
+
+    function pos2pix(x,y) {
+      return [x / SCALE, 400 - y / SCALE];
+    }
+
     function draw_path(canvas, path) {
 
       if (path.length > 0)
@@ -124,14 +132,20 @@
           ctx.lineWidth = 2;
 
           ctx.beginPath();
-          p = path[0]
-          ctx.moveTo(p[0] / SCALE, 400 - (p[1] / SCALE));
+          p = path[0];
+
+          pix = pos2pix(p[0], p[1]);
+          console.log("=== pix ===");
+          console.log(pix);
+          ctx.moveTo(pix[0], pix[1]);
           // draw a red line
 
           for (let i=0; i < (path.length - 1); i++)
           {
-            p = path[i+1]
-            ctx.lineTo(p[0] / SCALE, 400 - (p[1] / SCALE));
+            p = path[i+1];
+
+            pix = pos2pix(p[0], p[1]);
+            ctx.lineTo(pix[0], pix[1]);
           }
 
           ctx.stroke();
