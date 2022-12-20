@@ -26,7 +26,7 @@
   var view_point_x = 0;
   var view_point_y = 0;
 
-  var view_mode_ = 1; // 0: none, 1: fix pose
+  var view_mode_ = 2; // 0: none, 1: view to pose, 2: view to pose margin 
 
   var path_ = [];
 
@@ -342,6 +342,21 @@
         view_point_y = robot_pose_y;
       }
     }
+
+    if (view_mode_ == 2)
+    {
+      if ((robot_pose_x != null) && (robot_pose_y != null) && (robot_angle != null))
+      {
+        pix = pos2pix(robot_pose_x, robot_pose_y);
+
+        if ((Math.abs(pix[0] - 200) > 100) || (Math.abs(pix[1] - 200) > 100))
+        {
+          view_point_x = robot_pose_x;
+          view_point_y = robot_pose_y;
+        }
+      }
+    }
+
 
     requestAnimationFrame(render);
 
