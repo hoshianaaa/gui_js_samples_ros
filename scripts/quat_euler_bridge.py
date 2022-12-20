@@ -27,11 +27,30 @@ def quaternion_to_euler(quaternion):
     return Vector3(x=e[0], y=e[1], z=e[2])
 
 def path_callback(msg):
+  global pub_path
+
   print(msg)
+  pub_msg = Path()
+
+  for p in msg.poses:
+
+    quat = p.pose.orientation
+    euler = quaternion_to_euler(quat)
+
+    ps = PoseStamped()
+    ps = p
+    ps.pose.orientation.x = euler.x
+    ps.pose.orientation.y = euler.y
+    ps.pose.orientation.z = euler.z
+    ps.pose.orientation.w = 0
+
+    pub_msg.poses.append(ps)
+
+  pub_path.publish(pub_msg)
 
 def pose_callback(msg):
   global pub
-  print(msg)
+  #print(msg)
 
   quat = msg.pose.orientation
   euler = quaternion_to_euler(quat)
@@ -47,6 +66,7 @@ def pose_callback(msg):
 
 rospy.init_node("quat_euler_bridge")
 pub = rospy.Publisher("/pub_pose/data_euler", PoseStamped, queue_size=10)
+pub_path = rospy.Publisher("/pub_path/data_euler", Path, queue_size=10)
 
 rospy.Subscriber("/pub_pose/data", PoseStamped, pose_callback)
 rospy.Subscriber("/pub_path/data", Path, path_callback)

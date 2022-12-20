@@ -23,6 +23,8 @@
   var click_pix_x = null;
   var click_pix_y = null;
 
+  var path_ = [];
+
   ros.connect('ws://localhost:9090');
 
   var pub = new ROSLIB.Topic({
@@ -72,33 +74,86 @@
   });
 
   // Then we add a callback to be called every time a message is published on this topic.
-  listener.subscribe(function(message) {
+  listener2.subscribe(function(message) {
     //console.log('Received message on ' + listener.name + ': ' + message.data);
     
+    console.log("path");
     console.log(message);
 
-    p = message[0];
+    poses = message.poses
+    path_len = poses.length
 
-    x = p.pose.position.x;
-    y = p.pose.position.y;
-    z = p.pose.position.z;
+    console.log(path_len);
 
-    ex = p.pose.orientation.x;
-    ey = p.pose.orientation.y;
-    ez = p.pose.orientation.z;
+    path_ = [];
 
-    robot_pose_x = x / SCALE;
-    robot_pose_y = 400 - (y / SCALE);
-    robot_angle = ez;
+    for (let i=0;i<path_len; i++)
+    {
+      p = poses[i];
 
-    console.log(x);
-    // If desired, we can unsubscribe from the topic as well.
+      x = p.pose.position.x;
+      y = p.pose.position.y;
+      z = p.pose.position.z;
+
+      ex = p.pose.orientation.x;
+      ey = p.pose.orientation.y;
+      ez = p.pose.orientation.z;
+
+      path_.push([x,y,ez]);
+
+    }
+    console.log(path_);
+
+      // If desired, we can unsubscribe from the topic as well.
     //listener.unsubscribe();
   });
 
 
 
 //  pub.publish(msg);
+
+    function draw_path(canvas, path) {
+
+      if (path.length > 0)
+      {
+        if (canvas.getContext) 
+        {
+
+          var ctx = canvas.getContext('2d');
+          ctx.strokeStyle = 'lime';
+          ctx.lineWidth = 2;
+
+          ctx.beginPath();
+          p = path[0]
+          ctx.moveTo(p[0] / SCALE, 400 - (p[1] / SCALE));
+          // draw a red line
+
+          for (let i=0; i < (path.length - 1); i++)
+          {
+            p = path[i+1]
+            ctx.lineTo(p[0] / SCALE, 400 - (p[1] / SCALE));
+          }
+
+          ctx.stroke();
+        }
+      }
+    }
+
+    function draw_line(canvas, line) {
+      if (canvas.getContext) 
+      {
+        var ctx = canvas.getContext('2d');
+        ctx.strokeStyle = 'lime';
+        ctx.lineWidth = 2;
+
+        // draw a red line
+        ctx.beginPath();
+        ctx.moveTo(100, 100);
+        ctx.lineTo(300, 100);
+        ctx.lineTo(300, 50);
+        ctx.stroke();
+      }
+    }
 
     function draw_point(canvas, x,y) {
       if (canvas.getContext) 
@@ -171,6 +226,7 @@
         {
           var ctx = canvas.getContext("2d");
               ctx.strokeStyle = "black";
+              ctx.lineWidth = 1;
              for (i = 10; i < 400; i += 20) 
                {
                ctx.moveTo(0, i);
@@ -246,6 +302,11 @@
     if ((click_pix_x != null) && (click_pix_y != null))
     {
       draw_point(canvas, click_pix_x, click_pix_y); 
+    }
+    
+    if (path_.length > 0)
+    {
+      draw_path(canvas, path_);
     }
 
     requestAnimationFrame(render);

@@ -56,10 +56,10 @@ r = rospy.Rate(10)
 
 msg = Path()
 msg.header.frame_id = "map"
-msg.poses.append(gen_pose_stamped(0,0,0))
-msg.poses.append(gen_pose_stamped(0,2,0))
-msg.poses.append(gen_pose_stamped(2,2,0))
-msg.poses.append(gen_pose_stamped(2,0,0))
+msg.poses.append(gen_pose_stamped(1,1,0))
+msg.poses.append(gen_pose_stamped(1,3,0))
+msg.poses.append(gen_pose_stamped(3,3,0))
+msg.poses.append(gen_pose_stamped(3,1,0))
 
 while not rospy.is_shutdown():
 
