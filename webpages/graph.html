@@ -112,7 +112,7 @@
 
 //  pub.publish(msg);
 
-    function pix2position(x,y) { 
+    function pix2pos(x,y) { 
       return [x * SCALE, (400 - y) * SCALE];
     }
 
@@ -297,8 +297,9 @@
             click_pix_x = x; 
             click_pix_y = y;
 
-            msg.point.x = Number(x) * SCALE;
-            msg.point.y = (400 - Number(y)) * SCALE;
+            p = pix2pos(x,y);
+            msg.point.x = p[0];
+            msg.point.y = p[1];
 
             pub.publish(msg);
 
