@@ -26,6 +26,8 @@
   var view_point_x = 0;
   var view_point_y = 0;
 
+  var view_mode_ = 1; // 0: none, 1: fix pose
+
   var path_ = [];
 
   ros.connect('ws://localhost:9090');
@@ -65,7 +67,8 @@
     robot_pose_y = y;
     robot_angle = ez;
 
-    //console.log(x);
+    console.log("=== robot pose ===");
+    console.log(x,y);
     // If desired, we can unsubscribe from the topic as well.
     //listener.unsubscribe();
   });
@@ -116,13 +119,13 @@
 //  pub.publish(msg);
 
     function pix2pos(x,y) { 
-      return [x * SCALE + view_point_x, (400 - y) * SCALE + view_point_y]; // move (1,1) m
+      return [x * SCALE + (view_point_x - 2), (400 - y) * SCALE + (view_point_y - 2)]; // move (1,1) m
       //return [x * SCALE, (400 - y) * SCALE];
     }
 
     function pos2pix(x,y) {
       //return [x / SCALE - 100, 400 - y / SCALE + 100]; // move (100,100) pix
-      return [(x - view_point_x) / SCALE, 400 - (y - view_point_y) / SCALE]; // move (1,1) m
+      return [(x - (view_point_x - 2)) / SCALE, 400 - (y - (view_point_y - 2)) / SCALE]; // move (1,1) m
       //return [x / SCALE, 400 - y / SCALE];
     }
 
@@ -329,6 +332,15 @@
     if (path_.length > 0)
     {
       draw_path(canvas, path_);
+    }
+
+    if (view_mode_ == 1)
+    {
+      if ((robot_pose_x != null) && (robot_pose_y != null) && (robot_angle != null))
+      {
+        view_point_x = robot_pose_x;
+        view_point_y = robot_pose_y;
+      }
     }
 
     requestAnimationFrame(render);
