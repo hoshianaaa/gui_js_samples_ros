@@ -13,7 +13,7 @@
 <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
 
 <script>  
-  var SCALE = 0.01;
+  var SCALE = 0.05;
   var ros = new ROSLIB.Ros();
 
   var robot_pose_x = null;
@@ -27,6 +27,7 @@
   var view_point_y = 0;
 
   var view_mode_ = 2; // 0: none, 1: view to pose, 2: view to pose margin 
+  var margin_pix_ = 50;
 
   var path_ = [];
 
@@ -119,13 +120,13 @@
 //  pub.publish(msg);
 
     function pix2pos(x,y) { 
-      return [x * SCALE + (view_point_x - 2), (400 - y) * SCALE + (view_point_y - 2)]; // move (1,1) m
+      return [x * SCALE + (view_point_x - 2*SCALE/0.01), (400 - y) * SCALE + (view_point_y - 2*SCALE/0.01)]; // move (1,1) m
       //return [x * SCALE, (400 - y) * SCALE];
     }
 
     function pos2pix(x,y) {
       //return [x / SCALE - 100, 400 - y / SCALE + 100]; // move (100,100) pix
-      return [(x - (view_point_x - 2)) / SCALE, 400 - (y - (view_point_y - 2)) / SCALE]; // move (1,1) m
+      return [(x - (view_point_x - 2*SCALE/0.01)) / SCALE, 400 - (y - (view_point_y - 2*SCALE/0.01)) / SCALE]; // move (1,1) m
       //return [x / SCALE, 400 - y / SCALE];
     }
 
@@ -349,7 +350,7 @@
       {
         pix = pos2pix(robot_pose_x, robot_pose_y);
 
-        if ((Math.abs(pix[0] - 200) > 100) || (Math.abs(pix[1] - 200) > 100))
+        if ((Math.abs(pix[0] - 200) > margin_pix_) || (Math.abs(pix[1] - 200) > margin_pix_))
         {
           view_point_x = robot_pose_x;
           view_point_y = robot_pose_y;
