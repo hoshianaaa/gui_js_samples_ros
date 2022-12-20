@@ -113,11 +113,14 @@
 //  pub.publish(msg);
 
     function pix2pos(x,y) { 
-      return [x * SCALE, (400 - y) * SCALE];
+      return [x * SCALE + 1, (400 - y) * SCALE + 1]; // move (1,1) m
+      //return [x * SCALE, (400 - y) * SCALE];
     }
 
     function pos2pix(x,y) {
-      return [x / SCALE, 400 - y / SCALE];
+      //return [x / SCALE - 100, 400 - y / SCALE + 100]; // move (100,100) pix
+      return [(x - 1) / SCALE, 400 - (y - 1) / SCALE]; // move (1,1) m
+      //return [x / SCALE, 400 - y / SCALE];
     }
 
     function draw_path(canvas, path) {
