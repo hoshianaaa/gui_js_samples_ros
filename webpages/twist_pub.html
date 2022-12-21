@@ -12,18 +12,6 @@
   <script type="text/javascript" type="text/javascript">
     var ros = new ROSLIB.Ros();
 
-    ros.on('connection', function () {
-      document.getElementById("status").innerHTML = "Connected";
-    });
-
-    ros.on('error', function (error) {
-      document.getElementById("status").innerHTML = "Error";
-    });
-
-    ros.on('close', function () {
-      document.getElementById("status").innerHTML = "Closed";
-    });
-
     this.ros.connect('ws://' + location.hostname + ':9090');
 
     cmd_vel_listener = new ROSLIB.Topic({
@@ -91,8 +79,9 @@
 </head>
 
 <body>
-  <p>Connection status: <span id="status"></span></p>
-  <div id="zone_joystick" style="position: relative;"></div>
+  <!--p>Connection status: <span id="status"></span></p-->
+  <!--div id="zone_joystick" style="position: relative;"></div-->
+  <div id="zone_joystick" style="position: relative; top: 100px;"></div>
 </body>
 
 </html>
