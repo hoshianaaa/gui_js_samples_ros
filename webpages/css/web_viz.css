@@ -1,0 +1,29 @@
+#top{
+	position: absolute;
+	top: 2.5em;
+	right: 0px;
+	left: 0px;
+	height: 500px;
+	#border-bottom: 2px solid #ccc;
+  text-align: center;
+}
+
+#center{
+	position: absolute;
+  margin:0;
+  padding:0;
+  left:0;
+
+  border: none;
+  width:99vw;
+  top:600px;
+  bottom:0px;
+  display: flex;
+  border: 0px solid #000;
+}
+
+iframe {
+	border: none;
+	height: 100%;
+	width: 100%;
+}
