@@ -44,8 +44,8 @@ pos.x = 0
 while not rospy.is_shutdown():
   
   pos.x = pos.x + 0.03
-  if pos.x > 3:
-    pos.x = 0
+  if pos.x > 5:
+    pos.x = -5
   pos.y = 2
   pos.z = 0
 
