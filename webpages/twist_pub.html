@@ -26,17 +26,6 @@
 
     this.ros.connect('ws://' + location.hostname + ':9090');
 
-    var txt_listener = new ROSLIB.Topic({
-      ros: ros,
-      name: '/txt_msg',
-      messageType: 'std_msgs/String'
-    });
-
-    txt_listener.subscribe(function (m) {
-      document.getElementById("msg").innerHTML = m.data;
-      move(1, 0);
-    });
-
     cmd_vel_listener = new ROSLIB.Topic({
       ros: ros,
       name: "/cmd_vel",
@@ -103,7 +92,6 @@
 
 <body>
   <p>Connection status: <span id="status"></span></p>
-  <p>Last message on /txt_msg: <span id="msg"></span></p>
   <div id="zone_joystick" style="position: relative;"></div>
 </body>
 
