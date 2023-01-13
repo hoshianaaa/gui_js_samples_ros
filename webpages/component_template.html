@@ -41,7 +41,8 @@
 
         const params = url.searchParams;
 
-        topic_name = params.get("topic_name");
+        pub_topic_name = params.get("pub_topic_name");
+        sub_topic_name = params.get("sub_topic_name");
 
         ros = new ROSLIB.Ros();
 
@@ -61,6 +62,10 @@
 
         sub.subscribe(function(message) {
           console.log('Received message on ' + sub.name + ': ' + message.data);
+
+          var out_frame = document.getElementById("output");
+
+          out_frame.innerText = "value: " + slider.value;
 
 //          listener.unsubscribe();
         });
@@ -84,6 +89,10 @@
 
 <body>
         <button type=”button” class="rounded-corner" onclick="buttonClick()">reset</button>
+        <div>
+        <a id="output">value: </a>
+        <div>
+
 </body>
 </html>
 
