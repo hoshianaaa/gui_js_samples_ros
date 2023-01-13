@@ -22,6 +22,10 @@ bash run
 - `graph.html`
 
 ```
+roslaunch  gui_js_samples_ros graph.launch
+```
+
+```
 on click graph publish topic : 'Geometry_msgs/PoseStamped'
 subscribe topic and show graph : 'Geometry_msgs/PoseStamped'
 ```
