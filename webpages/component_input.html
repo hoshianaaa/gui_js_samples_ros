@@ -28,6 +28,7 @@
   // Connecting to ROS
   // -----------------
 
+  var data_name = "";
   var pub_topic_name = "data";
   var sub_topic_name = "state";
   var ros = null;
@@ -43,6 +44,9 @@
 
         pub_topic_name = params.get("pub_topic_name");
         sub_topic_name = params.get("sub_topic_name");
+        data_name = params.get("data_name");
+
+        document.getElementById("output").innerText = data_name;
 
         ros = new ROSLIB.Ros();
 
@@ -89,8 +93,9 @@
 </head>
 
 <body>
-        <!--button type=”button” class="rounded-corner" onclick="buttonClick()">reset</button-->
-        <input type="number" id="input" name="input">
+      <!--button type=”button” class="rounded-corner" onclick="buttonClick()">reset</button-->
+      <a id="output"></a>
+      <input type="number" id="input" name="input"/>
 </body>
 </html>
 
