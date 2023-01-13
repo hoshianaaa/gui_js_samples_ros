@@ -9,16 +9,44 @@
 
   <script>
 
-  var ros = new ROSLIB.Ros();
 
-  ros.connect('ws://localhost:9090');
+    var topic_name = "data"
+    var ros = null;
+    var pub = null;
 
-  var pub = new ROSLIB.Topic({
-    ros : ros,
-    name : '/data11',
-    //messageType : 'geometry_msgs/Twist'
-    messageType : 'std_msgs/Float64'
-  });
+// --------- get window parameter ---------
+
+    window.onload = function() {
+        // URLを取得
+        const url = new URL(window.location.href);
+
+        // URLSearchParamsオブジェクトを取得
+        const params = url.searchParams;
+
+        // consoleに受け取ったパラメータを出力
+        console.log(params);
+
+        // パラメータから「username」を取得
+        topic_name = params.get("topic_name");
+
+        console.log(topic_name);
+
+
+        ros = new ROSLIB.Ros();
+
+        ros.connect('ws://localhost:9090');
+
+        pub = new ROSLIB.Topic({
+          ros : ros,
+          name : topic_name,
+          //messageType : 'geometry_msgs/Twist'
+          messageType : 'std_msgs/Float64'
+        });
+
+
+        }
+
+// -------------------------------------------
 
   var msg = new ROSLIB.Message({
     data: 33.333
@@ -32,6 +60,7 @@
       
       msg.data = Number(slider.value);
       pub.publish(msg);
+      console.log(topic_name);
     }
   </script>
 </head>
