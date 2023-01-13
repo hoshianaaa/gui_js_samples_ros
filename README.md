@@ -12,6 +12,13 @@ source ~/catkin_ws/devel/setup.bash
 
 ## run
 
+```
+roscd gui_js_samples_ros
+bash run
+```
+
+## app
+
 - `graph.html`
 
 ```
