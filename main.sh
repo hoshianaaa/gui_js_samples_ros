@@ -15,4 +15,4 @@ gnome-terminal --tab -t "http server" -- bash -c "cd $SCRIPT_DIR/webpages; pytho
 sleep 2
 
 echo " - google-chrome"
-gnome-terminal -- bash -c "google-chrome http://localhost:8004/graph.html"
+gnome-terminal -- bash -c "google-chrome http://localhost:8004"
