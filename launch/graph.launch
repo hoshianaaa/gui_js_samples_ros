@@ -2,8 +2,6 @@
 
 <launch>
 
-  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
-  <node pkg="web_video_server" type ="web_video_server" name="web_video_server" output="log"/>
   <node pkg="gui_js_samples_ros" type ="pub_pose.py" name="pub_pose" output="log"/>
   <node pkg="gui_js_samples_ros" type ="quat_euler_bridge.py" name="quat_euler_bridge" output="log"/>
   <node pkg="gui_js_samples_ros" type ="pub_path.py" name="pub_path" output="log"/>
