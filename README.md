@@ -1,6 +1,24 @@
 # gui_js_samples_ros
 javascript ros samples
 
+## install
+
+```
+cd ~/catkin_ws/src
+git clone https://github.com/hoshianaaa/gui_js_samples_ros.git
+catkin build
+source ~/catkin_ws/devel/setup.bash
+```
+
+## run
+
+```
+roscd gui_js_samples_ros
+bash run
+```
+
+## app
+
 - `graph.html`
 
 ```
